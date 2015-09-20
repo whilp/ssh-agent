@@ -21,3 +21,9 @@ Now, other containers can access the keys via the `ssh-agent` by setting the `SS
 ```
 docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/ssh-agent/socket ubuntu ssh-add -l
 ```
+
+## Compatibility
+
+This approach is tested with:
+
+- OSX / Virtualbox / docker-machine
