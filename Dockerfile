@@ -6,3 +6,4 @@ RUN apk add --update openssh && rm -rf /var/cache/apk/*
 COPY run.sh /run.sh
 VOLUME ${SOCKET_DIR}
 ENTRYPOINT ["/run.sh"]
+CMD ["ssh-agent"]
