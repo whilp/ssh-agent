@@ -25,7 +25,7 @@ docker run --rm --volumes-from=ssh-agent -v ~/.ssh:/ssh -it whilp/ssh-agent:late
 `Host key verification failed` is common if `known_hosts` are not setup.  Hosts such as `github.com` or `bitbucket.org` will require host key validation.  Follow this step to copy any `known_hosts` from your `host` to the `ssh-agent`. 
 
 ```console
-docker run --rm --volumes-from=ssh-agent -v ~/.ssh:/ssh -it whilp/ssh-agent cp /ssh/known_hosts /root/.ssh/known_hosts
+docker run --rm --volumes-from=ssh-agent -v ~/.ssh:/ssh -it whilp/ssh-agent:latest cp /ssh/known_hosts /root/.ssh/known_hosts
 ```
 
 ### 4. Access via other containers
