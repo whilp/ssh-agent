@@ -35,7 +35,7 @@ Now, other containers can access the keys via the `ssh-agent` by setting the `SS
 #### Example 1 - List Keys
 
 ```console
-docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/root/.ssh/socket ubuntu ssh-add -l
+docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/root/.ssh/socket ubuntu /bin/bash -c "apt-get install -y openssh-client && ssh-add -l"
 ```
 
 #### Example 2 - Test `known_hosts`
@@ -43,7 +43,7 @@ docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/root/.ssh/socket 
 Test optional `known_hosts` configuration (assuming you followed step 3 above and have Github keys setup)
 
 ```console
-docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/root/.ssh/socket ubuntu apt-get install -y openssh-client && ssh -T git@github.com
+docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/root/.ssh/socket ubuntu /bin/bash -c "apt-get install -y openssh-client && ssh -T git@github.com"
 ```
 
 ## Compatibility
