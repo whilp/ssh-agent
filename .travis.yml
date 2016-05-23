@@ -1,0 +1,13 @@
+sudo: required
+
+services:
+  - docker
+
+language: c
+install: true
+
+script:
+  - make
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" -e "$DOCKER_EMAIL"
+  - docker push whilp/ssh-agent
+  
