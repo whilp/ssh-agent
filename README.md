@@ -22,7 +22,18 @@ docker run -u 1001 --rm --volumes-from=ssh-agent -v ~/.ssh:~/.ssh -it whilp/ssh-
 
 ### Access via other containers
 
-Now, other containers can access the keys via the `ssh-agent` by setting the `SSH_AUTH_SOCK` environment variable.
+Now, other containers can access the keys via the `ssh-agent` by setting the `SSH_AUTH_SOCK` environment variable. For convenience, containers that have access to the volume containing `SSH_AUTH_SOCK` can configure their environment using `runit`'s `chpst` tool:
+
+```console
+docker run --rm --volumes-from=ssh-test -it alpine:edge /bin/sh -c "apk --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing add runit && chpst -e /ssh/env /usr/bin/env | grep SSH_AUTH_SOCK"
+fetch http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/edge/main/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/edge/community/x86_64/APKINDEX.tar.gz
+(1/1) Installing runit (2.1.2-r3)
+  0% [                                           ]78  1% [                                           ]78 10% [####                                       ]78 17% [#######                                    ]78 24% [##########                                 ]78 36% [###############                            ]78 51% [######################                     ]78 62% [##########################                 ]78 72% [###############################            ]78 82% [###################################        ]78100% [###########################################]78Executing busybox-1.24.2-r2.trigger
+OK: 5 MiB in 12 packages
+SSH_AUTH_SOCK=/ssh/auth/sock
+```
 
 ## Examples
 
