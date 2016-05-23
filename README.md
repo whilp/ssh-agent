@@ -20,15 +20,7 @@ Run a temporary container which has access to both the volumes from the long-liv
 docker run --rm --volumes-from=ssh-agent -v ~/.ssh:/ssh -it whilp/ssh-agent:latest ssh-add /ssh/<host_key_file_name>
 ```
 
-### 3. (optional) Add known_hosts
-
-`Host key verification failed` is common if `known_hosts` are not setup.  Hosts such as `github.com` or `bitbucket.org` will require host key validation.  Follow this step to copy any `known_hosts` from your `host` to the `ssh-agent`. 
-
-```console
-docker run --rm --volumes-from=ssh-agent -v ~/.ssh:/ssh -it whilp/ssh-agent:latest cp /ssh/known_hosts /root/.ssh/known_hosts
-```
-
-### 4. Access via other containers
+### 3. Access via other containers
 
 Now, other containers can access the keys via the `ssh-agent` by setting the `SSH_AUTH_SOCK` environment variable.
 
@@ -38,13 +30,9 @@ Now, other containers can access the keys via the `ssh-agent` by setting the `SS
 docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/root/.ssh/socket ubuntu /bin/bash -c "apt-get install -y openssh-client && ssh-add -l"
 ```
 
-#### Example 2 - Test `known_hosts`
+## Notes
 
-Test optional `known_hosts` configuration (assuming you followed step 3 above and have Github keys setup)
-
-```console
-docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/root/.ssh/socket ubuntu /bin/bash -c "apt-get install -y openssh-client && ssh -T git@github.com"
-```
+- this container provides `ssh-agent` support; other common `ssh` functionality (including `known_hosts` management) is out of scope
 
 ## Compatibility
 
