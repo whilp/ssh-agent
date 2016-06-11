@@ -9,7 +9,7 @@ ssh-agent in a container.
 This container declares a volume that hosts the agent's socket so that other invocations of the `ssh` client can interact with it. Specify a UID if you would like non-root `ssh` clients in other containers to be able to connect.
 
 ```console
-docker run -u 1001 -d --name=ssh-agent whilp/ssh-agent:latest
+docker run -u 1001 -d -v ssh:/ssh --name=ssh-agent whilp/ssh-agent:latest
 ```
 
 ### Add your ssh keys
@@ -17,7 +17,7 @@ docker run -u 1001 -d --name=ssh-agent whilp/ssh-agent:latest
 Run a temporary container which has access to both the volumes from the long-lived `ssh-agent` container as well as a volume mounted from your host that includes your SSH keys. This container will only be used to load the keys into the long-lived `ssh-agent` container. Run the following command once for each key you wish to make available through the `ssh-agent`:
 
 ```console
-docker run -u 1001 --rm --volumes-from=ssh-agent -v ~/.ssh:~/.ssh -it whilp/ssh-agent:latest ssh-add ~/.ssh/id_rsa
+docker run -u 1001 --rm -v ssh:/ssh -v $HOME:$HOME -it whilp/ssh-agent:latest ssh-add $HOME/.ssh/id_rsa
 ```
 
 ### Access via other containers
@@ -25,7 +25,7 @@ docker run -u 1001 --rm --volumes-from=ssh-agent -v ~/.ssh:~/.ssh -it whilp/ssh-
 Now, other containers can access the keys via the `ssh-agent` by setting the `SSH_AUTH_SOCK` environment variable. For convenience, containers that have access to the volume containing `SSH_AUTH_SOCK` can configure their environment using `runit`'s `chpst` tool:
 
 ```console
-docker run --rm --volumes-from=ssh-test -it alpine:edge /bin/sh -c "apk --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing add runit && chpst -e /ssh/env /usr/bin/env | grep SSH_AUTH_SOCK"
+docker run --rm -v ssh:/ssh -it alpine:edge /bin/sh -c "apk --update --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing add runit && chpst -e /ssh/env /usr/bin/env | grep SSH_AUTH_SOCK"
 fetch http://dl-cdn.alpinelinux.org/alpine/edge/testing/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/edge/main/x86_64/APKINDEX.tar.gz
 fetch http://dl-cdn.alpinelinux.org/alpine/edge/community/x86_64/APKINDEX.tar.gz
@@ -40,7 +40,7 @@ SSH_AUTH_SOCK=/ssh/auth/sock
 ### List Keys
 
 ```console
-docker run --rm -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/ssh/auth/sock ubuntu /bin/bash -c "apt-get install -y openssh-client && ssh-add -l"
+docker run --rm -it -v ssh:/ssh -e SSH_AUTH_SOCK=/ssh/auth/sock ubuntu /bin/bash -c "apt-get install -y openssh-client && ssh-add -l"
 ```
 
 ## Notes
