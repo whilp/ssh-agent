@@ -40,7 +40,7 @@ SSH_AUTH_SOCK=/ssh/auth/sock
 ### List Keys
 
 ```console
-docker run --rm -it -v ssh:/ssh -e SSH_AUTH_SOCK=/ssh/auth/sock ubuntu /bin/bash -c "apt-get install -y openssh-client && ssh-add -l"
+docker run --rm -it -v ssh:/ssh -e SSH_AUTH_SOCK=/ssh/auth/sock ubuntu /bin/bash -c "apt-get update && apt-get install -y openssh-client && ssh-add -l"
 ```
 
 ## Notes
